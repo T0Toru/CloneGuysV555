@@ -13,5 +13,23 @@ UCLASS()
 class CLONEGUYSV2_API ACGGameState : public AGameState
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
+	
+public:
+
+	UFUNCTION()
+	void AddFinishedPlayer(ACloneGuysV2Character* PlayerCharacter);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	// UFUNCTION()
+	// void OnRep_RoundSeconds();
+	
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxRoundTime = 120;
+	// UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
+	// int32 RoundSeconds = 120;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)	
+	TArray<ACloneGuysV2Character*> FinishedPlayers;
 	
 };
