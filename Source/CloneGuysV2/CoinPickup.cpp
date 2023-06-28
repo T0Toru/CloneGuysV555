@@ -29,25 +29,52 @@ ACoinPickup::ACoinPickup()
 
 }
 
-void ACoinPickup::SetPickupVisibility(bool IsVisible)
+void ACoinPickup::Server_SetPickupVisibility_Implementation(bool bIsVisible)
 {
+	SetPickupVisibility(bIsVisible);
+}
+
+void ACoinPickup::SetPickupVisibility_Implementation(bool bIsVisible)
+{
+	if(!bIsVisible)
+	{
+		StaticMeshComponent->SetVisibility(bIsVisible);
+		CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		StaticMeshComponent->SetVisibility(bIsVisible);
+		CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
+}
+
+void ACoinPickup::ResetPickupVisibility()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ReAppearTimerHandle);
+	Server_SetPickupVisibility(true);
 }
 
 void ACoinPickup::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor && (OtherActor != this))
+	if(HasAuthority())
 	{
-		if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(OtherActor))
+		SetPickupVisibility(false);
+		GetWorld()->GetTimerManager().SetTimer(ReAppearTimerHandle, this, &ACoinPickup::ResetPickupVisibility, 3.0f, false);
+		
+		if(OtherActor && (OtherActor != this))
 		{
-			if(ACGGameState* CGGameState = GetWorld()->GetGameState<ACGGameState>())
+			if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(OtherActor))
 			{
-				if(HasAuthority())
+				if(ACGGameState* CGGameState = GetWorld()->GetGameState<ACGGameState>())
+				{
 					CGGameState->AddPlayerScore(PlayerCharacter->GetPlayerState()->GetPlayerId(), 1);
+				}
+				//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("PLAYER DETECTED WOOOO")));
 			}
-			//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("PLAYER DETECTED WOOOO")));
 		}
 	}
+	
 }
 
 // Called when the game starts or when spawned

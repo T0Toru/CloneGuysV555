@@ -15,8 +15,12 @@ public:
 	// Sets default values for this actor's properties
 	ACoinPickup();
 
-	UFUNCTION()
-	void SetPickupVisibility(bool IsVisible);
+	UFUNCTION(Server, Reliable)
+	void Server_SetPickupVisibility(bool bIsVisible);
+	UFUNCTION(NetMulticast, Reliable)
+	void SetPickupVisibility(bool bIsVisible);
+
+	void ResetPickupVisibility();
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +32,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	FTimerHandle ReAppearTimerHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USphereComponent* CollisionSphere;
