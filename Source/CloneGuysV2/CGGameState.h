@@ -19,6 +19,9 @@ protected:
 	
 public:
 
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+	void AddPlayerScore(int32 PlayerId, int32 PlayerScore);
+
 	UFUNCTION()
 	void AddFinishedPlayer(ACloneGuysV2Character* PlayerCharacter);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

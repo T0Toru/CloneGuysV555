@@ -18,7 +18,6 @@ void ACGGameMode::BeginPlay()
 
 void ACGGameMode::CheckForWinner()
 {
-
 	if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 	{
 		if(!CGGameState->FinishedPlayers.IsEmpty())

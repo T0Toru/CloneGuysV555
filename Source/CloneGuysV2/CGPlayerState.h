@@ -13,5 +13,17 @@ UCLASS()
 class CLONEGUYSV2_API ACGPlayerState : public APlayerState
 {
 	GENERATED_BODY()
+
+public:
+	
+	ACGPlayerState();
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	int32 CurrentPlayerScore;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	int32 PlayerFinishPosition;
+
+	void SetPlayerScore(float NewPlayerScore);
+	float GetPlayerScore();
+	
 	
 };
