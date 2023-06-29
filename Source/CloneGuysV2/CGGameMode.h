@@ -8,6 +8,13 @@
 class ACGPlayerState;
 class ACloneGuysV2Character;
 
+namespace CurrentMatchState
+{
+	const FName PreGame = FName(TEXT("PreGame"));
+	const FName OngoingGame = FName(TEXT("OngoingGame"));
+	const FName EndGame = FName(TEXT("EndGame"));
+}
+
 /**
  * 
  */
@@ -21,11 +28,23 @@ class CLONEGUYSV2_API ACGGameMode : public AGameMode
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void BeginPlay() override;
+	virtual void OnPostLogin(AController* NewPlayer) override;
 
+	virtual void StartMatch() override;
+	virtual void OnMatchStateSet() override;
+	virtual void SetMatchState(FName NewState) override;
+
+	void StartPlayTime();
+	
 	UFUNCTION(BlueprintCallable)
 	void CheckForWinner();
 	UFUNCTION(BlueprintCallable)
 	void FinishMatch();
+
+	UPROPERTY(BlueprintReadOnly)
+	FTimerHandle WaitForGameStartTimerHandle;
+
+	ACGPlayerState* WinnerState;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxNumPlayers = 3;

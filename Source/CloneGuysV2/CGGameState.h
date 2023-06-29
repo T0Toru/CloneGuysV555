@@ -25,13 +25,23 @@ public:
 	UFUNCTION()
 	void AddFinishedPlayer(ACloneGuysV2Character* PlayerCharacter);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	// UFUNCTION()
-	// void OnRep_RoundSeconds();
+
+	UFUNCTION()
+	void StartGameTimer();
+	UFUNCTION(Reliable,NetMulticast)
+	void StartGameTimerMulti();
+	UFUNCTION()
+	void OnRep_RoundSeconds();
+	UFUNCTION()
+	void TimerCountdown();
 	
 	UPROPERTY(BlueprintReadOnly)
-	int32 MaxRoundTime = 120;
-	// UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
-	// int32 RoundSeconds = 120;
+	FTimerHandle GameTimerHandle;
+	
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxGameTime = 180;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
+	int32 CurrentGameSeconds = 180;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)	
 	TArray<ACloneGuysV2Character*> FinishedPlayers;
 	

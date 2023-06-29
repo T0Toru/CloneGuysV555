@@ -17,13 +17,16 @@ class CLONEGUYSV2_API ACGPlayerState : public APlayerState
 public:
 	
 	ACGPlayerState();
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	void SetPlayerScore(float NewPlayerScore);
+	float GetPlayerScore();
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Replicated)
 	int32 CurrentPlayerScore;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	int32 PlayerFinishPosition;
 
-	void SetPlayerScore(float NewPlayerScore);
-	float GetPlayerScore();
-	
 	
 };

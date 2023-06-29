@@ -14,6 +14,53 @@ void ACGGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACGGameState, FinishedPlayers);
+	DOREPLIFETIME(ACGGameState, CurrentGameSeconds);
+}
+
+void ACGGameState::StartGameTimer()
+{
+	if(CurrentGameSeconds > 0)
+	{
+		GetWorldTimerManager().ClearTimer(GameTimerHandle);
+		GetWorldTimerManager().SetTimer(GameTimerHandle, this, &ACGGameState::TimerCountdown, 1.0f, true);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(GameTimerHandle);
+	}
+	if(HasAuthority())
+	{
+		StartGameTimerMulti();
+	}
+}
+
+void ACGGameState::StartGameTimerMulti_Implementation()
+{
+	if(!HasAuthority())
+	{
+		StartGameTimer();
+	}
+}
+
+void ACGGameState::OnRep_RoundSeconds()
+{
+	StartGameTimer();
+}
+
+void ACGGameState::TimerCountdown()
+{
+	if(CurrentGameSeconds > 0)
+	{
+		CurrentGameSeconds -= 1;
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Yellow, *FString::Printf(TEXT("Current Round Time: %d"), CurrentGameSeconds));
+	}
+	else
+	{
+		if(HasAuthority())
+		{
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
+		}
+	}
 }
 
 void ACGGameState::BeginPlay()

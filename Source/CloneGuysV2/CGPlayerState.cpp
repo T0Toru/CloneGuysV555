@@ -3,8 +3,17 @@
 
 #include "CGPlayerState.h"
 
+#include "Net/UnrealNetwork.h"
+
 ACGPlayerState::ACGPlayerState()
 {
+}
+
+void ACGPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACGPlayerState, CurrentPlayerScore);
 }
 
 void ACGPlayerState::SetPlayerScore(float NewPlayerScore)
