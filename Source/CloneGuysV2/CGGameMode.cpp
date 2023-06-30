@@ -16,7 +16,7 @@ void ACGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//SetMatchState(CurrentMatchState::OngoingGame);
+	//SetMatchState(CurrentMatchState::PreGame);
 	//GetWorldTimerManager().SetTimer(WaitForGameStartTimerHandle, this, &ACGGameMode::StartPlayTime, 5.0f,false, 3.0f);
 	
 }
@@ -38,10 +38,10 @@ void ACGGameMode::OnPostLogin(AController* NewPlayer)
 void ACGGameMode::StartMatch()
 {
 	Super::StartMatch();
-	// if(HasMatchStarted())
-	// 	return;
+	 if(HasMatchStarted())
+	 	return;
 
-	//SetMatchState(CurrentMatchState::PreGame);
+	SetMatchState(CurrentMatchState::PreGame);
 }
 
 void ACGGameMode::OnMatchStateSet()
@@ -59,7 +59,7 @@ void ACGGameMode::OnMatchStateSet()
 				{
 					if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(pController->GetPawn()))
 					{
-						PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+						//PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
 					}
 				}
 			}

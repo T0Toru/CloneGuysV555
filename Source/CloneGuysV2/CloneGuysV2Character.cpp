@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "CloneGuysV2Character.h"
+
+#include "CGPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -60,6 +62,9 @@ void ACloneGuysV2Character::SetupPlayerInputComponent(class UInputComponent* Pla
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	
+	//Custom bind for score
+	PlayerInputComponent->BindAction("ShowScore", IE_Pressed, this, &ACloneGuysV2Character::ShowScore);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ACloneGuysV2Character::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &ACloneGuysV2Character::MoveRight);
@@ -127,3 +132,12 @@ void ACloneGuysV2Character::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+void ACloneGuysV2Character::ShowScore()
+{
+	if(ACGPlayerController* CGPlayerController = Cast<ACGPlayerController>(GetController()))
+	{
+		CGPlayerController->ToggleScoreTab();
+	}
+}
+

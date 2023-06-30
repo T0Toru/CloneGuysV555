@@ -16,7 +16,8 @@ void ACGPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CreateHUD();
+	if(HasAuthority())
+		CreateHUD();
 }
 
 void ACGPlayerController::CreateHUD()
@@ -41,6 +42,10 @@ void ACGPlayerController::CreateHUD()
 	}
 }
 
+void ACGPlayerController::CreateScoreTab()
+{
+}
+
 void ACGPlayerController::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
@@ -48,5 +53,33 @@ void ACGPlayerController::OnRep_PlayerState()
 	if(PlayerState)
 	{
 		CreateHUD();
+	}
+}
+
+void ACGPlayerController::ToggleScoreTab()
+{
+	if (!IsValid(ScoreWidget) || ScoreWidget->GetName() == "None")
+	{
+		if(ScoreWidgetClass)
+		{
+			ScoreWidget = CreateWidget<UCGWidget>(this, ScoreWidgetClass);
+			ScoreWidget->AddToViewport();
+			ScoreWidget->SetVisibility(ESlateVisibility::Visible);
+			return;
+		}
+	}
+	if (!IsValid(ScoreWidget) || ScoreWidget->GetName() == "None")
+		return;
+	
+	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() == ESlateVisibility::Collapsed)
+	{
+		//ScoreWidget->AddToViewport();
+		ScoreWidget->SetVisibility(ESlateVisibility::Visible);
+		return;
+	}
+
+	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() != ESlateVisibility::Collapsed)
+	{
+		ScoreWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
