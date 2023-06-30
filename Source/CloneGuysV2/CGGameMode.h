@@ -8,12 +8,20 @@
 class ACGPlayerState;
 class ACloneGuysV2Character;
 
-namespace CurrentMatchState
+// namespace CurrentMatchState
+// {
+// 	const FName PreGame = FName(TEXT("PreGame"));
+// 	const FName OngoingGame = FName(TEXT("OngoingGame"));
+// 	const FName EndGame = FName(TEXT("EndGame"));
+// }
+
+UENUM()
+enum class ECurrentGamePhase : uint8 
 {
-	const FName PreGame = FName(TEXT("PreGame"));
-	const FName OngoingGame = FName(TEXT("OngoingGame"));
-	const FName EndGame = FName(TEXT("EndGame"));
-}
+	PreGame,
+	OngoingGame,
+	EndGame
+};
 
 /**
  * 
@@ -29,11 +37,15 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void BeginPlay() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
+	
+	void StartGame();
+	void OnGamePhaseSet();
+	void SetGamePhase(ECurrentGamePhase NewPhase);
 
-	virtual void StartMatch() override;
-	virtual void OnMatchStateSet() override;
-	virtual void SetMatchState(FName NewState) override;
-
+	bool HasGameStarted();
+	
+	ECurrentGamePhase CurrentGamePhase;
+	
 	void StartPlayTime();
 	
 	UFUNCTION(BlueprintCallable)
@@ -50,6 +62,7 @@ public:
 	float MaxNumPlayers = 3;
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	// TArray<ACloneGuysV2Character*> FinishedPlayers;
+	bool bHasGameStarted;
 	
 	
 };

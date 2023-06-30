@@ -15,39 +15,29 @@ void ACGGameMode::PostLogin(APlayerController* NewPlayer)
 void ACGGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//SetMatchState(CurrentMatchState::PreGame);
-	//GetWorldTimerManager().SetTimer(WaitForGameStartTimerHandle, this, &ACGGameMode::StartPlayTime, 5.0f,false, 3.0f);
+	
+	StartGame();
 	
 }
 
 void ACGGameMode::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
-
-	//Hacky way of starting the match
-	// if(HasAuthority())
-	// {
-	// 	if(!HasMatchStarted())
-	// 	{
-	// 		StartMatch();
-	// 	}
-	// }
+	
 }
 
-void ACGGameMode::StartMatch()
+void ACGGameMode::StartGame()
 {
-	Super::StartMatch();
-	 if(HasMatchStarted())
-	 	return;
+	if(HasGameStarted())
+		return;
 
-	SetMatchState(CurrentMatchState::PreGame);
+	SetGamePhase(ECurrentGamePhase::PreGame);
+	
 }
 
-void ACGGameMode::OnMatchStateSet()
+void ACGGameMode::OnGamePhaseSet()
 {
-	Super::OnMatchStateSet();
-	if(MatchState == CurrentMatchState::PreGame)
+	if(CurrentGamePhase == ECurrentGamePhase::PreGame)
 	{
 		GetWorldTimerManager().SetTimer(WaitForGameStartTimerHandle, this, &ACGGameMode::StartPlayTime, 5.0f,false, 3.0f);
 		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
@@ -59,13 +49,13 @@ void ACGGameMode::OnMatchStateSet()
 				{
 					if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(pController->GetPawn()))
 					{
-						//PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+						PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
 					}
 				}
 			}
 		}
 	}
-	else if(MatchState == CurrentMatchState::OngoingGame)
+	else if(CurrentGamePhase == ECurrentGamePhase::OngoingGame)
 	{
 		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 		{
@@ -83,7 +73,7 @@ void ACGGameMode::OnMatchStateSet()
 			CGGameState->StartGameTimer();
 		}
 	}
-	else if(MatchState == CurrentMatchState::EndGame)
+	else if(CurrentGamePhase == ECurrentGamePhase::EndGame)
 	{
 		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 		{
@@ -98,6 +88,11 @@ void ACGGameMode::OnMatchStateSet()
 					}
 				}
 			}
+
+			if(CGGameState->IsMatchTimeOver())
+			{
+				
+			}
 		}
 
 		FinishMatch();	
@@ -105,15 +100,22 @@ void ACGGameMode::OnMatchStateSet()
 	}
 }
 
-void ACGGameMode::SetMatchState(FName NewState)
+void ACGGameMode::SetGamePhase(ECurrentGamePhase GamePhase)
 {
-	Super::SetMatchState(NewState);
+	CurrentGamePhase = GamePhase;
+	OnGamePhaseSet();
+}
+
+bool ACGGameMode::HasGameStarted()
+{
+	return bHasGameStarted;
 }
 
 void ACGGameMode::StartPlayTime()
 {
 	GetWorldTimerManager().ClearTimer(WaitForGameStartTimerHandle);
-	SetMatchState(CurrentMatchState::OngoingGame);
+	//SetMatchState(CurrentMatchState::OngoingGame);
+	SetGamePhase(ECurrentGamePhase::OngoingGame);
 }
 
 void ACGGameMode::CheckForWinner()
@@ -135,22 +137,6 @@ void ACGGameMode::CheckForWinner()
 		}
 	}
 	
-	// if(!FinishedPlayers.IsEmpty())
-	// {
-	// 	if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
-	// 	{
-	// 		if(CGGameState->PlayerArray.Num() == FinishedPlayers.Num())
-	// 		{
-	// 			for (ACloneGuysV2Character* Player : FinishedPlayers )
-	// 			{
-	// 				float Pos = 0;
-	// 				UE_LOG(LogTemp, Warning, TEXT("Player %s, finished in position %f"), *Player->GetName(), Pos);
-	// 				Pos++;
-	// 			}
-	// 			FinishMatch();
-	// 		}
-	// 	}
-	// }
 }
 
 void ACGGameMode::FinishMatch()

@@ -34,6 +34,8 @@ public:
 	void OnRep_RoundSeconds();
 	UFUNCTION()
 	void TimerCountdown();
+	UFUNCTION()
+	bool IsMatchTimeOver(){return bIsTimeOver;}
 
 	UFUNCTION()
 	void DisplayMatchEnd(const FString& Winner);
@@ -47,6 +49,8 @@ public:
 	int32 MaxGameTime = 180;
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
 	int32 CurrentGameSeconds = 180;
+	UPROPERTY()
+	bool bIsTimeOver = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)	
 	TArray<ACloneGuysV2Character*> FinishedPlayers;
 	

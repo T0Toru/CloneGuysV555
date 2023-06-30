@@ -60,6 +60,11 @@ void ACGGameState::TimerCountdown()
 	{
 		if(HasAuthority())
 		{
+			bIsTimeOver = true;
+			// if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+			// {
+			// 	CGGameMode->CheckForWinner();
+			// }
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
 		}
 	}
@@ -108,7 +113,6 @@ void ACGGameState::AddPlayerScore_Implementation(int32 PlayerId, int32 PlayerSco
 			UE_LOG(LogTemp, Warning, TEXT("Player %d current score is %f "), CGPlayerState->GetPlayerId(), CGPlayerState->GetPlayerScore());
 			
 		}
-
 			
 		// if(PlayerState->GetPlayerId() == PlayerId)
 		// {
