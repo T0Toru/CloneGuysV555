@@ -6,6 +6,11 @@
 #include "GameFramework/GameState.h"
 #include "CGGameState.generated.h"
 
+class ACGPlayerState;
+class ACGPlayerController;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWinnerSet, ACGPlayerState*, WinningPlayer);
+
 /**
  * 
  */
@@ -23,7 +28,7 @@ public:
 	void AddPlayerScore(int32 PlayerId, int32 PlayerScore);
 
 	UFUNCTION()
-	void AddFinishedPlayer(ACloneGuysV2Character* PlayerCharacter);
+	void AddFinishedPlayer(ACGPlayerState* FinishedPlayerState);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION()
@@ -38,9 +43,10 @@ public:
 	bool IsMatchTimeOver(){return bIsTimeOver;}
 
 	UFUNCTION()
-	void DisplayMatchEnd(const FString& Winner);
+	void DisplayMatchEnd(ACGPlayerState* WinnerPlayerState);
 	UFUNCTION(Reliable, NetMulticast)
-	void MultiDisplayMatchEnd(const FString& Winner);
+	void MultiDisplayMatchEnd(ACGPlayerState* WinnerPlayerState);
+	void SetWinningPlayer(ACGPlayerState* WinningPlayerState);
 	
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle GameTimerHandle;
@@ -51,7 +57,11 @@ public:
 	int32 CurrentGameSeconds = 180;
 	UPROPERTY()
 	bool bIsTimeOver = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)	
-	TArray<ACloneGuysV2Character*> FinishedPlayers;
+	UPROPERTY(BlueprintReadOnly, Replicated)	
+	TArray<ACGPlayerState*> FinishedPlayers;
+	UPROPERTY(BlueprintAssignable)
+	FOnWinnerSet WinnerSetDelegate;
+	UPROPERTY(BlueprintReadOnly, Replicated)	
+	ACGPlayerState* WinningPlayer;
 	
 };

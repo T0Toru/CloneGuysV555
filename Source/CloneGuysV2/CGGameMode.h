@@ -49,14 +49,17 @@ public:
 	void StartPlayTime();
 	
 	UFUNCTION(BlueprintCallable)
-	void CheckForWinner();
+	void CheckForWinnerByScore();
+	UFUNCTION()
+	void CheckForWinnerByPosition();
 	UFUNCTION(BlueprintCallable)
 	void FinishMatch();
 
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle WaitForGameStartTimerHandle;
 
-	ACGPlayerState* WinnerState;
+	UPROPERTY(BlueprintReadOnly)
+	ACGPlayerState* WinnerPlayerState;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxNumPlayers = 3;

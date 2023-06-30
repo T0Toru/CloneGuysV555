@@ -4,6 +4,8 @@
 #include "CGGameMode.h"
 
 #include "CGGameState.h"
+#include "CGPlayerController.h"
+#include "CGPlayerState.h"
 #include "CloneGuysV2Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -95,7 +97,7 @@ void ACGGameMode::OnGamePhaseSet()
 			}
 		}
 
-		FinishMatch();	
+		FinishMatch();
 		
 	}
 }
@@ -118,7 +120,12 @@ void ACGGameMode::StartPlayTime()
 	SetGamePhase(ECurrentGamePhase::OngoingGame);
 }
 
-void ACGGameMode::CheckForWinner()
+void ACGGameMode::CheckForWinnerByScore()
+{
+	
+}
+
+void ACGGameMode::CheckForWinnerByPosition()
 {
 	if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 	{
@@ -126,21 +133,31 @@ void ACGGameMode::CheckForWinner()
 		{
 			if(CGGameState->PlayerArray.Num() == CGGameState->FinishedPlayers.Num())
 			{
-				float Pos = 1.0f;
-				for (ACloneGuysV2Character* Player : CGGameState->FinishedPlayers)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Player %s, finished in position %f"), *Player->GetName(), Pos);
-					Pos++;
-				}
-				FinishMatch();
+				WinnerPlayerState = CGGameState->FinishedPlayers[0];
+				//CGGameState->SetWinningPlayer(WinnerPlayerState);
+				
+				// float Pos = 1.0f;
+				// for (ACloneGuysV2Character* Player : CGGameState->FinishedPlayers)
+				// {
+				// 	UE_LOG(LogTemp, Warning, TEXT("Player %s, finished in position %f"), *Player->GetName(), Pos);
+				// 	Pos++;
+				// }
+				SetGamePhase(ECurrentGamePhase::EndGame);
 			}
 		}
 	}
-	
 }
 
 void ACGGameMode::FinishMatch()
 {
+	
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("Finish match called!")));
+		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
+		{
+			//CGGameState->SetWinningPlayer(WinnerPlayerState);
+			CGGameState->MultiDisplayMatchEnd(WinnerPlayerState);
+		}
+	
 	if(HasAuthority())
 	{
 		// for (FConstPlayerControllerIterator PControllerIterator = GetWorld()->GetPlayerControllerIterator(); PControllerIterator; PControllerIterator++ )
@@ -154,11 +171,5 @@ void ACGGameMode::FinishMatch()
 		// 		}
 		// 	}
 		// }
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("Finish match called!")));
-		
-		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
-		{
-			CGGameState->MultiDisplayMatchEnd("TEEEEEST");
-		}
 	}
 }

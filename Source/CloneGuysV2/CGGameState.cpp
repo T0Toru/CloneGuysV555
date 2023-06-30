@@ -17,6 +17,7 @@ void ACGGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(ACGGameState, FinishedPlayers);
 	DOREPLIFETIME(ACGGameState, CurrentGameSeconds);
+	DOREPLIFETIME(ACGGameState, WinningPlayer);
 }
 
 void ACGGameState::StartGameTimer()
@@ -54,24 +55,25 @@ void ACGGameState::TimerCountdown()
 	if(CurrentGameSeconds > 0)
 	{
 		CurrentGameSeconds -= 1;
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Yellow, *FString::Printf(TEXT("Current Round Time: %d"), CurrentGameSeconds));
+		//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Yellow, *FString::Printf(TEXT("Current Round Time: %d"), CurrentGameSeconds));
 	}
 	else
 	{
 		if(HasAuthority())
 		{
 			bIsTimeOver = true;
-			// if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-			// {
-			// 	CGGameMode->CheckForWinner();
-			// }
+			if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+			{
+				CGGameMode->CheckForWinnerByScore();
+				CGGameMode->SetGamePhase(ECurrentGamePhase::EndGame);
+			}
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
 		}
 	}
 }
 
 
-void ACGGameState::DisplayMatchEnd(const FString& Winner)
+void ACGGameState::DisplayMatchEnd(ACGPlayerState* WinnerPlayerState)
 {
 	
 	APlayerController* pController = UGameplayStatics::GetPlayerController(GetWorld(), 0); //Since we are making use of a listen server this should suffice, should a dedicated server be used this would be a no-go.
@@ -84,9 +86,17 @@ void ACGGameState::DisplayMatchEnd(const FString& Winner)
 	}
 }
 
-void ACGGameState::MultiDisplayMatchEnd_Implementation(const FString& Winner)
+void ACGGameState::SetWinningPlayer(ACGPlayerState* WinningPlayerState)
 {
-	DisplayMatchEnd(Winner);
+	WinnerSetDelegate.Broadcast(WinningPlayerState);
+	WinningPlayer = WinningPlayerState;
+}
+
+void ACGGameState::MultiDisplayMatchEnd_Implementation(ACGPlayerState* WinnerPlayerState)
+{
+	WinningPlayer = WinnerPlayerState;
+	DisplayMatchEnd(WinnerPlayerState);
+	WinnerSetDelegate.Broadcast(WinnerPlayerState);
 }
 
 void ACGGameState::BeginPlay()
@@ -129,12 +139,13 @@ bool ACGGameState::AddPlayerScore_Validate(int32 PlayerId, int32 PlayerScore)
 	return true;
 }
 
-void ACGGameState::AddFinishedPlayer(ACloneGuysV2Character* PlayerCharacter)
+void ACGGameState::AddFinishedPlayer(ACGPlayerState* FinishedPlayerState)
 {
-	FinishedPlayers.AddUnique(PlayerCharacter);
+	
+	FinishedPlayers.AddUnique(FinishedPlayerState);
 	if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		CGGameMode->CheckForWinner();
+		CGGameMode->CheckForWinnerByPosition();
 	}
 }
 
