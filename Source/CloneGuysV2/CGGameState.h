@@ -47,12 +47,11 @@ public:
 	UFUNCTION(Reliable, NetMulticast)
 	void MultiDisplayMatchEnd(ACGPlayerState* WinnerPlayerState);
 	void SetWinningPlayer(ACGPlayerState* WinningPlayerState);
+	void GetHighestScoringPlayer();
 	
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle GameTimerHandle;
 	
-	UPROPERTY(BlueprintReadOnly)
-	int32 MaxGameTime = 180;
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
 	int32 CurrentGameSeconds = 180;
 	UPROPERTY()

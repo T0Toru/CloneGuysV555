@@ -90,15 +90,8 @@ void ACGGameMode::OnGamePhaseSet()
 					}
 				}
 			}
-
-			if(CGGameState->IsMatchTimeOver())
-			{
-				
-			}
 		}
-
 		FinishMatch();
-		
 	}
 }
 
@@ -116,13 +109,26 @@ bool ACGGameMode::HasGameStarted()
 void ACGGameMode::StartPlayTime()
 {
 	GetWorldTimerManager().ClearTimer(WaitForGameStartTimerHandle);
-	//SetMatchState(CurrentMatchState::OngoingGame);
 	SetGamePhase(ECurrentGamePhase::OngoingGame);
 }
 
 void ACGGameMode::CheckForWinnerByScore()
 {
-	
+	if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
+	{
+		for (APlayerState * pState : CGGameState->PlayerArray)
+		{
+			if(ACGPlayerState* CGpState = Cast<ACGPlayerState>(pState))
+			{
+				if(CGpState->GetPlayerScore() > HighestScore)
+				{
+					HighestScore = CGpState->GetPlayerScore();
+					WinnerPlayerState = CGpState;
+				}
+			}
+		}
+		SetGamePhase(ECurrentGamePhase::EndGame);
+	}
 }
 
 void ACGGameMode::CheckForWinnerByPosition()
@@ -134,14 +140,6 @@ void ACGGameMode::CheckForWinnerByPosition()
 			if(CGGameState->PlayerArray.Num() == CGGameState->FinishedPlayers.Num())
 			{
 				WinnerPlayerState = CGGameState->FinishedPlayers[0];
-				//CGGameState->SetWinningPlayer(WinnerPlayerState);
-				
-				// float Pos = 1.0f;
-				// for (ACloneGuysV2Character* Player : CGGameState->FinishedPlayers)
-				// {
-				// 	UE_LOG(LogTemp, Warning, TEXT("Player %s, finished in position %f"), *Player->GetName(), Pos);
-				// 	Pos++;
-				// }
 				SetGamePhase(ECurrentGamePhase::EndGame);
 			}
 		}
@@ -150,26 +148,11 @@ void ACGGameMode::CheckForWinnerByPosition()
 
 void ACGGameMode::FinishMatch()
 {
-	
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("Finish match called!")));
+		//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("Finish match called!")));
 		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 		{
 			//CGGameState->SetWinningPlayer(WinnerPlayerState);
 			CGGameState->MultiDisplayMatchEnd(WinnerPlayerState);
 		}
 	
-	if(HasAuthority())
-	{
-		// for (FConstPlayerControllerIterator PControllerIterator = GetWorld()->GetPlayerControllerIterator(); PControllerIterator; PControllerIterator++ )
-		// {
-		// 	APlayerController* pController = PControllerIterator->Get();
-		// 	if(pController && (pController->GetPawn() != nullptr))
-		// 	{
-		// 		if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(pController->GetPawn()))
-		// 		{
-		// 			PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
-		// 		}
-		// 	}
-		// }
-	}
 }

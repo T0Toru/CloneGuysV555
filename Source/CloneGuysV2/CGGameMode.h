@@ -58,6 +58,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle WaitForGameStartTimerHandle;
 
+	UPROPERTY()
+	int32 HighestScore = -100;
+
 	UPROPERTY(BlueprintReadOnly)
 	ACGPlayerState* WinnerPlayerState;
 	

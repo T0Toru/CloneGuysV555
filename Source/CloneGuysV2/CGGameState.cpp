@@ -61,13 +61,14 @@ void ACGGameState::TimerCountdown()
 	{
 		if(HasAuthority())
 		{
+			//GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
+			GetWorldTimerManager().ClearTimer(GameTimerHandle);
 			bIsTimeOver = true;
 			if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 			{
 				CGGameMode->CheckForWinnerByScore();
-				CGGameMode->SetGamePhase(ECurrentGamePhase::EndGame);
+				//CGGameMode->SetGamePhase(ECurrentGamePhase::EndGame);
 			}
-			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
 		}
 	}
 }
@@ -141,7 +142,6 @@ bool ACGGameState::AddPlayerScore_Validate(int32 PlayerId, int32 PlayerScore)
 
 void ACGGameState::AddFinishedPlayer(ACGPlayerState* FinishedPlayerState)
 {
-	
 	FinishedPlayers.AddUnique(FinishedPlayerState);
 	if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
