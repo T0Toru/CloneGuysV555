@@ -42,8 +42,23 @@ void ACGPlayerController::CreateHUD()
 	}
 }
 
-void ACGPlayerController::CreateScoreTab()
+void ACGPlayerController::CreateMatchEndScreen()
 {
+	if (!IsValid(MatchEndWidget) || MatchEndWidget->GetName() == "None")
+	{
+		if(MatchEndWidgetClass)
+		{
+
+			UIHUDWidget->RemoveFromParent();
+			
+			MatchEndWidget = CreateWidget<UCGWidget>(this, MatchEndWidgetClass);
+			MatchEndWidget->AddToViewport();
+			MatchEndWidget->SetVisibility(ESlateVisibility::Visible);
+	
+			FInputModeUIOnly InputMode;
+			SetInputMode(InputMode);
+		}
+	}
 }
 
 void ACGPlayerController::OnRep_PlayerState()
@@ -68,7 +83,7 @@ void ACGPlayerController::ToggleScoreTab()
 			return;
 		}
 	}
-	if (!IsValid(ScoreWidget) || ScoreWidget->GetName() == "None")
+	if (!IsValid(ScoreWidget) || ScoreWidget->GetName() == "None") //return if it becomes invalid for some reason
 		return;
 	
 	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() == ESlateVisibility::Collapsed)

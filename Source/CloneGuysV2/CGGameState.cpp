@@ -4,7 +4,9 @@
 #include "CGGameState.h"
 
 #include "CGGameMode.h"
+#include "CGPlayerController.h"
 #include "CGPlayerState.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -61,6 +63,25 @@ void ACGGameState::TimerCountdown()
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, *FString::Printf(TEXT("TIME'S UP!")));
 		}
 	}
+}
+
+
+void ACGGameState::DisplayMatchEnd(const FString& Winner)
+{
+	
+	APlayerController* pController = UGameplayStatics::GetPlayerController(GetWorld(), 0); //Since we are making use of a listen server this should suffice, should a dedicated server be used this would be a no-go.
+	if(pController)
+	{
+		if(ACGPlayerController* CGController = Cast<ACGPlayerController>(pController))
+		{
+			CGController->CreateMatchEndScreen();
+		}
+	}
+}
+
+void ACGGameState::MultiDisplayMatchEnd_Implementation(const FString& Winner)
+{
+	DisplayMatchEnd(Winner);
 }
 
 void ACGGameState::BeginPlay()

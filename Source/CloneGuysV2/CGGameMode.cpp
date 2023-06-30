@@ -157,6 +157,22 @@ void ACGGameMode::FinishMatch()
 {
 	if(HasAuthority())
 	{
+		// for (FConstPlayerControllerIterator PControllerIterator = GetWorld()->GetPlayerControllerIterator(); PControllerIterator; PControllerIterator++ )
+		// {
+		// 	APlayerController* pController = PControllerIterator->Get();
+		// 	if(pController && (pController->GetPawn() != nullptr))
+		// 	{
+		// 		if(ACloneGuysV2Character* PlayerCharacter = Cast<ACloneGuysV2Character>(pController->GetPawn()))
+		// 		{
+		// 			PlayerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+		// 		}
+		// 	}
+		// }
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Blue, *FString::Printf(TEXT("Finish match called!")));
+		
+		if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
+		{
+			CGGameState->MultiDisplayMatchEnd("TEEEEEST");
+		}
 	}
 }

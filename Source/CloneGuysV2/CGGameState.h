@@ -34,6 +34,11 @@ public:
 	void OnRep_RoundSeconds();
 	UFUNCTION()
 	void TimerCountdown();
+
+	UFUNCTION()
+	void DisplayMatchEnd(const FString& Winner);
+	UFUNCTION(Reliable, NetMulticast)
+	void MultiDisplayMatchEnd(const FString& Winner);
 	
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle GameTimerHandle;

@@ -19,7 +19,7 @@ public:
 	ACGPlayerController();
 	virtual void BeginPlay() override;
 	void CreateHUD();
-	void CreateScoreTab();
+	void CreateMatchEndScreen();
 	virtual void OnRep_PlayerState() override;
 
 	void ToggleScoreTab();
@@ -36,5 +36,11 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "UI")
 	class UCGWidget* ScoreWidget;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
+	TSubclassOf<class UCGWidget> MatchEndWidgetClass;
+
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	class UCGWidget* MatchEndWidget;
 	
 };
