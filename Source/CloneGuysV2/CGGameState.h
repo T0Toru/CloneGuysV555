@@ -52,7 +52,7 @@ public:
 	FTimerHandle GameTimerHandle;
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_RoundSeconds)
-	int32 CurrentGameSeconds = 180;
+	int32 CurrentGameSeconds = 90;
 	UPROPERTY()
 	bool bIsTimeOver = false;
 	UPROPERTY(BlueprintReadOnly, Replicated)	

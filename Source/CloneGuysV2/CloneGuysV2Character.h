@@ -26,14 +26,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
 
-	// UPROPERTY(EditAnywhere, Category = "Components")
-	// UTextRenderComponent* TextRenderComponent;
-
-	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
-	// TSubclassOf<class UCGWidget> DisplayNameWidgetClass;
-	//
-	// UPROPERTY(BlueprintReadOnly, Category = "UI")
-	// class UCGWidget* DisplayNameWidget;
 
 protected:
 

@@ -29,6 +29,9 @@ public:
 	//virtual void ServerChangeName_Implementation(const FString& S) override;
 
 	void ToggleScoreTab();
+
+	UPROPERTY()
+	bool bIsScoreShown = false;
 	
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")

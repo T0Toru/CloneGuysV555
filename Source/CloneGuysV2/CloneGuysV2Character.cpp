@@ -137,6 +137,13 @@ void ACloneGuysV2Character::ShowScore()
 {
 	if(ACGPlayerController* CGPlayerController = Cast<ACGPlayerController>(GetController()))
 	{
+		if(!CGPlayerController->bIsScoreShown)
+		{
+			CGPlayerController->SetShowMouseCursor(true);
+		}
+		else
+			CGPlayerController->SetShowMouseCursor(false);
+		
 		CGPlayerController->ToggleScoreTab();
 	}
 }

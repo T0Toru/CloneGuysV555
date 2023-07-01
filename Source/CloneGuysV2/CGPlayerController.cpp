@@ -75,7 +75,7 @@ void ACGPlayerController::ServerSetPlayerGivenName_Implementation(const FText& N
 {
 	if(ACGPlayerState* CGPState = GetPlayerState<ACGPlayerState>())
 	{
-		CGPState->GivenPlayerName;
+		CGPState->GivenPlayerName = NewName;
 		if(HasAuthority())
 			CGPState->OnRep_PlayerCurrentName();
 	}
@@ -108,18 +108,21 @@ void ACGPlayerController::ToggleScoreTab()
 	
 	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() == ESlateVisibility::Collapsed)
 	{
-		//ScoreWidget->AddToViewport();
+		bIsScoreShown = true;
 		FInputModeGameAndUI InputMode;
-		bShowMouseCursor = true;
-		SetInputMode(InputMode);
+		FInputModeUIOnly Input;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
+		SetInputMode(Input);
+		
 		ScoreWidget->SetVisibility(ESlateVisibility::Visible);
 		return;
 	}
 
 	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() != ESlateVisibility::Collapsed)
 	{
+		bIsScoreShown = false;
+		
 		FInputModeGameOnly InputMode;
-		bShowMouseCursor = false;
 		SetInputMode(InputMode);
 		ScoreWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}

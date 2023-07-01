@@ -36,8 +36,9 @@ void ACGPlayerState::OnRep_PlayerCurrentName()
 		{
 			if(UTextRenderComponent* TRenderer = CloneGuysV2Character->FindComponentByClass<UTextRenderComponent>())
 			{
-			TRenderer->SetHiddenInGame(false);
-			TRenderer->SetText(GivenPlayerName);
+				// TRenderer->SetHiddenInGame(false);
+				// TRenderer->SetVisibility(true);
+				TRenderer->SetText(GivenPlayerName);
 			}
 			
 		}
