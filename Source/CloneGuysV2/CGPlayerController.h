@@ -22,6 +22,12 @@ public:
 	void CreateMatchEndScreen();
 	virtual void OnRep_PlayerState() override;
 
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+	void ServerSetPlayerGivenName(const FText& NewName);
+	
+	//virtual void ServerChangeName_Implementation(const FString& S) override;
+
 	void ToggleScoreTab();
 	
 	

@@ -71,6 +71,26 @@ void ACGPlayerController::OnRep_PlayerState()
 	}
 }
 
+void ACGPlayerController::ServerSetPlayerGivenName_Implementation(const FText& NewName)
+{
+	if(ACGPlayerState* CGPState = GetPlayerState<ACGPlayerState>())
+	{
+		CGPState->GivenPlayerName;
+		if(HasAuthority())
+			CGPState->OnRep_PlayerCurrentName();
+	}
+}
+
+bool ACGPlayerController::ServerSetPlayerGivenName_Validate(const FText& NewName)
+{
+	return true;
+}
+
+// void ACGPlayerController::ServerChangeName_Implementation(const FString& S)
+// {
+// 	Super::ServerChangeName_Implementation(S);
+// }
+
 void ACGPlayerController::ToggleScoreTab()
 {
 	if (!IsValid(ScoreWidget) || ScoreWidget->GetName() == "None")
@@ -89,12 +109,18 @@ void ACGPlayerController::ToggleScoreTab()
 	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() == ESlateVisibility::Collapsed)
 	{
 		//ScoreWidget->AddToViewport();
+		FInputModeGameAndUI InputMode;
+		bShowMouseCursor = true;
+		SetInputMode(InputMode);
 		ScoreWidget->SetVisibility(ESlateVisibility::Visible);
 		return;
 	}
 
 	if(IsValid(ScoreWidget)&& ScoreWidget->GetVisibility() != ESlateVisibility::Collapsed)
 	{
+		FInputModeGameOnly InputMode;
+		bShowMouseCursor = false;
+		SetInputMode(InputMode);
 		ScoreWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }

@@ -22,6 +22,14 @@ public:
 	
 	void SetPlayerScore(float NewPlayerScore);
 	float GetPlayerScore();
+
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_PlayerCurrentName)
+	FText GivenPlayerName;
+	
+
+	UFUNCTION()
+	void OnRep_PlayerCurrentName();
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Replicated)
 	int32 CurrentPlayerScore;

@@ -52,6 +52,7 @@ public:
 	void CheckForWinnerByScore();
 	UFUNCTION()
 	void CheckForWinnerByPosition();
+	void GetHighestScoringPlayer();
 	UFUNCTION(BlueprintCallable)
 	void FinishMatch();
 

@@ -47,7 +47,6 @@ public:
 	UFUNCTION(Reliable, NetMulticast)
 	void MultiDisplayMatchEnd(ACGPlayerState* WinnerPlayerState);
 	void SetWinningPlayer(ACGPlayerState* WinningPlayerState);
-	void GetHighestScoringPlayer();
 	
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle GameTimerHandle;

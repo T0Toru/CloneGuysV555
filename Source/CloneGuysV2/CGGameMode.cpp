@@ -112,7 +112,7 @@ void ACGGameMode::StartPlayTime()
 	SetGamePhase(ECurrentGamePhase::OngoingGame);
 }
 
-void ACGGameMode::CheckForWinnerByScore()
+void ACGGameMode::GetHighestScoringPlayer()
 {
 	if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
 	{
@@ -127,8 +127,28 @@ void ACGGameMode::CheckForWinnerByScore()
 				}
 			}
 		}
-		SetGamePhase(ECurrentGamePhase::EndGame);
 	}
+}
+
+void ACGGameMode::CheckForWinnerByScore()
+{
+	// if(ACGGameState* CGGameState = Cast<ACGGameState>(GameState))
+	// {
+	// 	for (APlayerState * pState : CGGameState->PlayerArray)
+	// 	{
+	// 		if(ACGPlayerState* CGpState = Cast<ACGPlayerState>(pState))
+	// 		{
+	// 			if(CGpState->GetPlayerScore() > HighestScore)
+	// 			{
+	// 				HighestScore = CGpState->GetPlayerScore();
+	// 				WinnerPlayerState = CGpState;
+	// 			}
+	// 		}
+	// 	}
+	// 	SetGamePhase(ECurrentGamePhase::EndGame);
+	// }
+	GetHighestScoringPlayer();
+	SetGamePhase(ECurrentGamePhase::EndGame);
 }
 
 void ACGGameMode::CheckForWinnerByPosition()
@@ -145,6 +165,7 @@ void ACGGameMode::CheckForWinnerByPosition()
 		}
 	}
 }
+
 
 void ACGGameMode::FinishMatch()
 {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/Character.h"
 #include "CloneGuysV2Character.generated.h"
 
@@ -24,6 +25,15 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+
+	// UPROPERTY(EditAnywhere, Category = "Components")
+	// UTextRenderComponent* TextRenderComponent;
+
+	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
+	// TSubclassOf<class UCGWidget> DisplayNameWidgetClass;
+	//
+	// UPROPERTY(BlueprintReadOnly, Category = "UI")
+	// class UCGWidget* DisplayNameWidget;
 
 protected:
 

@@ -6,6 +6,7 @@
 #include "CGGameMode.h"
 #include "CGPlayerController.h"
 #include "CGPlayerState.h"
+#include "CloneGuysV2Character.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -95,6 +96,7 @@ void ACGGameState::SetWinningPlayer(ACGPlayerState* WinningPlayerState)
 
 void ACGGameState::MultiDisplayMatchEnd_Implementation(ACGPlayerState* WinnerPlayerState)
 {
+	GetWorldTimerManager().ClearTimer(GameTimerHandle);
 	WinningPlayer = WinnerPlayerState;
 	DisplayMatchEnd(WinnerPlayerState);
 	WinnerSetDelegate.Broadcast(WinnerPlayerState);
@@ -124,13 +126,6 @@ void ACGGameState::AddPlayerScore_Implementation(int32 PlayerId, int32 PlayerSco
 			UE_LOG(LogTemp, Warning, TEXT("Player %d current score is %f "), CGPlayerState->GetPlayerId(), CGPlayerState->GetPlayerScore());
 			
 		}
-			
-		// if(PlayerState->GetPlayerId() == PlayerId)
-		// {
-		// 	PlayerState->SetScore(PlayerState->GetScore() + PlayerScore);
-		// }
-		//
-		// UE_LOG(LogTemp, Warning, TEXT("Player %d current score is %d "), PlayerId, PlayerState->GetScore());
 		
 	}
 }
@@ -145,6 +140,11 @@ void ACGGameState::AddFinishedPlayer(ACGPlayerState* FinishedPlayerState)
 	FinishedPlayers.AddUnique(FinishedPlayerState);
 	if(ACGGameMode* CGGameMode = Cast<ACGGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
+		if(ACGPlayerController* CGController = Cast<ACGPlayerController>(FinishedPlayerState->GetPlayerController()))
+		{
+			FInputModeUIOnly InputMode;
+			CGController->SetInputMode(InputMode);			
+		}
 		CGGameMode->CheckForWinnerByPosition();
 	}
 }
